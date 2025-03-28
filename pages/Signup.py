@@ -1,11 +1,16 @@
 import streamlit as st
 import re 
 import sqlite3
+import bcrypt
 #https://www.youtube.com/watch?v=R7aBgKndPxo - Database connection
 conn=sqlite3.connect('fraud.db', check_same_thread=False)
 cursor=conn.cursor()
 
-
+def hashPassword(new_password):
+    salt = bcrypt.gensalt()
+    hash_password = bcrypt.hashpw(
+        new_password.encode(),salt)
+    return hash_password
 def signup():
     st.markdown('<h1 style="text-align: center;font-size:80px;color:#bad7d9;font-family:Georgia">Signup</h1>', unsafe_allow_html=True,)
 
@@ -46,7 +51,9 @@ def signup():
                                 "password": new_password  }
 
                                 st.success("Requirements matched! You can now submit your details")
-                                addInfo(first_name,last_name,new_username,email,new_password)
+                                hashed_password = hashPassword(new_password)  # Hash password before storing
+ 
+                                addInfo(first_name,last_name,new_username,email,hashed_password)
                                 account_details.append(account_detail)
                                 st.session_state.page = "Home"
                             else:
