@@ -143,9 +143,6 @@ def dashboard():
                     df_main = pd.read_csv(input_data)
                     df=df_main.copy()
 
-                    df=df.drop(columns=['Unnamed: 0','first','last','street','lat','long','zip','cc_num','is_fraud'])
-                    df=df.drop(columns=['state','merch_lat','merch_long','city_pop','unix_time','gender','job','trans_num']) #Dropcolumns
-
                     df['amt'] = pt.transform(df[['amt']])
 
 
