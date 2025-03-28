@@ -1,3 +1,4 @@
+bcrypt==4.2.1
 captcha==0.6.0
 django_recaptcha==4.0.0
 email_validator==2.2.0
