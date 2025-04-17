@@ -86,7 +86,7 @@ with col2:
     st.markdown('<h2 style="text-align: center;font-size:30px;color:#bad7d9;font-family:Georgia">Fraud rate</h2>', unsafe_allow_html=True,)
     st.markdown(f'<h2 style="text-align: center; font-size:30px; color:#bad7d9; font-family:Georgia">{average_fraud:.2%}</h2>', unsafe_allow_html=True)
 st.markdown("---")
-
+st.link_button("View reports page", "https://fraudguard1.streamlit.app/Reports")
 col3,col4=st.columns(2)
 
 #https://www.youtube.com/watch?v=Sb0A9i6d320&list=PLHgX2IExbFovFg4DI0_b3EWyIGk-oGRzq
