@@ -7,7 +7,6 @@ import plotly.express as px
 import numpy as np
 from supabase import create_client
 
-pass_url = "https://www.streamlit.io"
 
 url="https://gywtlivqrvxgttetymwh.supabase.co"
 key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5d3RsaXZxcnZ4Z3R0ZXR5bXdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzMDQxMTAsImV4cCI6MjA1OTg4MDExMH0.1cL2AKAwyA_exgRE3qGh17KbYXa-gPDl93w-kjvAyAw"
@@ -25,7 +24,7 @@ def creds_entered():
               st.warning("Please enter your password.")
           else:
              st.error("Invalid Email/Password. Please signup if you do not have an account") 
-             st.markdown("[Click here to signup](%s)" % pass_url)
+             st.link_button("Need help?", "https://fraudguard1.streamlit.app/Contactus")
 
 #https://www.youtube.com/watch?v=dOl51vhOGRc - Authentication
 ##Login page
