@@ -2,7 +2,6 @@ import streamlit as st
 import re 
 import sqlite3
 import os
-import psycopg2
 import bcrypt
 from supabase import create_client
 #https://www.youtube.com/watch?v=R7aBgKndPxo - Database connection
