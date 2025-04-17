@@ -61,7 +61,7 @@ def signup():
  
                                 addInfo(first_name,last_name,contact_details,company,email,hashed_password)
                                 account_details.append(account_detail)
-                                st.session_state.page = "Home"
+                                st.link_button("Go back to homepage", "https://fraudguard1.streamlit.app/")
                             else:
                                 st.error("All fields are required. Please fill in all the fields.")
                         else:
