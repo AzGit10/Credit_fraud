@@ -81,6 +81,7 @@ def displayTransaction():
     results=response.data
     df_transactions=pd.DataFrame(results)
     st.write("Click on the columns to sort them!")
+    st.link_button("View fraud analyses in dashboard", "https://fraudguard1.streamlit.app/Dashboard")
     st.dataframe(df_transactions.head(10000))
     st.success("Transactions have been displayed on table")
 
