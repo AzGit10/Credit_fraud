@@ -5,7 +5,6 @@ import random
 import os
 import time
 import datetime
-
 from email_validator import validate_email, EmailNotValidError
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -13,6 +12,7 @@ from captcha.image import ImageCaptcha
 from io import BytesIO
 from PIL import Image
 from streamlit_js_eval import streamlit_js_eval
+
 #https://github.com/jlnetosci/streamlit-contact-form/blob/main/pages/contact-form.py  - Contact form code help
 ## Page configuration options
 st.set_page_config(layout="wide") # column widths set below are dependent on the layout being set to wide
@@ -67,7 +67,7 @@ with col1: # left side of the layout
     message = st.text_area("**Your message***", value=st.session_state.get('message', ''), key='message') # input widget for message
 
     st.markdown('<p style="font-size: 13px;color:#bad7d9">*Required fields</p>', unsafe_allow_html=True) # indication to user that both fields must be filled
-
+    #Button to send email
     if st.button("Send", type="primary"):
         if not email or not message:
             st.error("Please fill out all required fields.") # error for any blank field
