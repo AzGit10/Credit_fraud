@@ -69,7 +69,7 @@ def loadTransactions():
 def dashboard():
     st.markdown('<h1 style="text-align: center;font-size:80px;color:#bad7d9;font-family:Georgia">Dashboard</h1>', unsafe_allow_html=True,)
     st.divider()
-    #https://www.youtube.com/watch?v=Sb0A9i6d320&list=PLHgX2IExbFovFg4DI0_b3EWyIGk-oGRzq
+    #https://www.youtube.com/watch?v=Sb0A9i6d320&list=PLHgX2IExbFovFg4DI0_b3EWyIGk-oGRzq - How to create an interactive dashboard
     df_transactions=loadTransactions()
 
     #Store the number of fraud transactions
@@ -80,18 +80,26 @@ def dashboard():
     else:
         average_fraud=0
 
-    col1,col3,col2 = st.columns(3)
+    col1,col3,col2 = st.columns([1, 2, 1])
 
     #Display total number of fraud transactions
     with col1:
         st.markdown('<h2 style="text-align: center;font-size:30px;color:#bad7d9;font-family:Georgia">Number of fraud transactions</h2>', unsafe_allow_html=True,)
-        st.markdown(f'<h2 style="text-align: center; font-size:30px; color:#bad7d9; font-family:Georgia">{total_fraud_transactions}</h2>', unsafe_allow_html=True)
+        st.write("######")
+        st.markdown(f'<h2 style="text-align: center; font-size:30px; color:red; font-family:Georgia">{total_fraud_transactions}</h2>', unsafe_allow_html=True)
 
     #Display the average fraud amongst transactions
     with col2:
         st.markdown('<h2 style="text-align: center;font-size:30px;color:#bad7d9;font-family:Georgia">Fraud rate</h2>', unsafe_allow_html=True,)
-        st.markdown(f'<h2 style="text-align: center; font-size:30px; color:#bad7d9; font-family:Georgia">{average_fraud:.2%}</h2>', unsafe_allow_html=True)
+        st.write("##")
+        st.markdown(f'<h2 style="text-align: center; font-size:30px; color:yellow; font-family:Georgia">{average_fraud:.2%}</h2>', unsafe_allow_html=True)
     st.markdown("---")
+
+    #Display the total number of transactions
+    with col3:
+        st.markdown('<h2 style="text-align: center;font-size:30px;color:#bad7d9;font-family:Georgia">Total number of transactions submitted</h2>', unsafe_allow_html=True,)
+        st.write("######")
+        st.markdown(f'<h2 style="text-align: center;font-size:30px;color:violet;font-family:Georgia">{len(df_transactions)}</h2>', unsafe_allow_html=True,)
 
     #Link to reports page
     st.link_button("View reports page", "https://fraudguard1.streamlit.app/Reports")
@@ -101,7 +109,7 @@ def dashboard():
     #https://www.youtube.com/watch?v=Sb0A9i6d320&list=PLHgX2IExbFovFg4DI0_b3EWyIGk-oGRzq - Using plot ly for charts
     with col3:
         st.markdown('<h2 style="text-align: center;font-size:30px;color:#bad7d9;font-family:Georgia">Average transaction by fraud</h2>', unsafe_allow_html=True,)
-
+        
         # Group by 'is_fraud' and calculate the mean transaction amount
         amt_fraud=(
             df_transactions.groupby('Fraud_Prediction')['amount'].mean().reset_index()
