@@ -156,7 +156,7 @@ def fraudcheck():
              # Using .iloc[] on the DataFrame to position columns correctly
                         df_new = X_scaled_df.iloc[:, [0, 3, 4, 5, 1, 2]]  
                     
-                    ##Model prediction
+                    ##Model prediction - https://machinelearningmastery.com/make-predictions-scikit-learn/
                         #Store models predictions for data in prediction variable
                         prediction=model.predict(df)
                         #Add prediction column to the dataset
@@ -236,7 +236,7 @@ def fraudcheck():
         
                         ##Check for fraud button
                         if st.button("Fraud check"):
-                    ##Model prediction
+                    ##Model prediction - https://machinelearningmastery.com/make-predictions-scikit-learn/
                             
                             #Store models predictions for data in prediction variable
                             prediction=model.predict(df)
@@ -280,6 +280,7 @@ def fraudcheck():
 # https://www.tutorialspoint.com/How-to-convert-Python-date-in-JSON-format - How to convert datetime in json format
 #https://www.geeksforgeeks.org/how-to-fix-datetime-datetime-not-json-serializable-in-python/ - Serializing datetime
 
+#https://www.youtube.com/watch?v=girsuXz0yA8&t=196s - SQlite3 database connection tutorial
 #Store data in sqlite database 
 def addTransactions(a,b,c,d,x,y,z):
     conn = sqlite3.connect('fraud.db')  # New connection
