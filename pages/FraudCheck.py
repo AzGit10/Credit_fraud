@@ -171,7 +171,6 @@ def fraudcheck():
                         else:
                                 st.success("✅ No fraudulent transactions")
                                 st.success("You can now enter new data to be checked")
-                                return True
                     
                         df_manual["Fraud_Prediction"]=prediction
 
