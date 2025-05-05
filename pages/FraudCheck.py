@@ -10,10 +10,12 @@ from datetime import datetime,date,time
 from supabase import create_client
 
 
+
 #https://www.youtube.com/watch?v=R7aBgKndPxo - Database connection tutorial - SQlite
 
 ##Load trained xgb model
 model=joblib.load("pages/xgb_model.pk1")
+
 ##Load power transformer used in backend
 pt = joblib.load("pages/powertransformer.pk1")
 ##Load encoder used in back end
@@ -67,10 +69,13 @@ def fraudcheck():
     st.markdown('<h1 style="text-align: center;font-size:80px;color:#bad7d9;font-family:Georgia">Fraud Check</h1>', unsafe_allow_html=True,)
     st.divider()
     
-    st.markdown('<div style="color:#bad7d9;font-size:23px;font-family:roboto">How to use FraudGuard?</div>',unsafe_allow_html=True)
+    st.markdown('<div style="color:green;font-size:23px;font-family:roboto">How to use FraudGuard?</div>',unsafe_allow_html=True)
     st.markdown('<div style="color:#bad7d9;font-size:20px;font-family:roboto">1) Select if you want to enter data manually or by uploading transaction .csv file</div>',unsafe_allow_html=True)
-    st.markdown('<div style="color:#bad7d9;font-size:20px;font-family:roboto">2) Enter the data manually or upload a file. Then click on the "Check for fraud" button </div>',unsafe_allow_html=True)
+    st.markdown('<div style="color:#bad7d9;font-size:20px;font-family:roboto">2) Enter the data manually or by uploading a file. Then click on the "Check for fraud/Submit details" button </div>',unsafe_allow_html=True)
     st.markdown('<div style="color:#bad7d9;font-size:20px;font-family:roboto">3) The results of the check will be displayed in a couple of seconds</div>',unsafe_allow_html=True)
+    st.markdown('<div style="color:green;font-size:23px;font-family:roboto">Data Requirements</div>',unsafe_allow_html=True)
+    st.markdown('<div style="color:#bad7d9;font-size:20px;font-family:roboto">Transaction amount, Transaction date and time, Date of birth (of the cardholder), Merchant involved in transaction, Transaction category, City in which the transaction took place</div>',unsafe_allow_html=True)
+
     col1, col2 = st.columns(2)
     start_time = datetime(1950, 10, 6, 12, 14, 55)
 
@@ -185,6 +190,7 @@ def fraudcheck():
             input_data=st.file_uploader("Upload your transaction data") 
 #https://discuss.streamlit.io/t/catching-the-error-message-in-file-upload/41322/2 - File exception errors
             #If the file is not e
+
             if input_data is not None:
                
                 try:
@@ -192,81 +198,85 @@ def fraudcheck():
                     filename, file_extension = os.path.splitext(input_data.name)
                     #If the file extension is not ".csv", an error message is sent
                     if (file_extension == ".csv") is True:
-                        
+                        data_consent=st.checkbox("I allow Fraud Guard to collect my data for learning purposes")
+                        if data_consent:
                         #Uplaoded file stored as a pandas dataframe
-                        df_main = pd.read_csv(input_data)
-                        df=df_main.copy() #Dropcolumns
-                        
-                        #Data preprocessing
-                        #Amount column is normalized
-                        df['amt'] = pt.transform(df[['amt']])
-
-                        #Transaction time is converted to date time object
-                        df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'])
-                        df['transaction_period'] = df['trans_date_trans_time'].view('int64') // 10**9  # Convert to seconds
-                        df.drop(columns=['trans_date_trans_time'], inplace=True)  # Drop original column
-
-                        #Date of birth is converted to date time object
-                        df['dob'] = pd.to_datetime(df['dob'])
-                        df['new_dob'] = df['dob'].view('int64') // 10**9  # Convert to seconds
-                        df.drop(columns=['dob'], inplace=True)  # Drop original column
-
-                        #Encode categorical variables
-                        #Encode merchant
-                        df['merchant_encoded'] = label_encoder.fit_transform(df['merchant'].fillna('Unknown'))   #Encode merchant
-                        df.drop(columns=['merchant'], inplace=True)   #Drop old merchant column
-
-                        #Encode category
-                        df['category_encoded'] = label_encoder.fit_transform(df['category'].fillna('Unknown'))
-                        df.drop(columns=['category'], inplace=True)
-
-                        #Encode city
-                        df['city_encoded'] = label_encoder.fit_transform(df['city'].fillna('Unknown'))
-                        df.drop(columns=['city'], inplace=True)        
-
-                        # Scale the features
-                        X_scaled = scaler.transform(df)
-
-                         # Convert X_scaled (NumPy array) back to a DataFrame with the original columns
-                        X_scaled_df = pd.DataFrame(X_scaled, columns=df.columns)
-
-                        #Position the fields in the correct for the model using .iloc
-                        df_new = X_scaled_df.iloc[:, [0, 3, 4, 5, 1, 2]]              
-        
-                        ##Check for fraud button
-                        if st.button("Fraud check"):
-                    ##Model prediction - https://machinelearningmastery.com/make-predictions-scikit-learn/
+                            df_main = pd.read_csv(input_data)
+                            df=df_main.copy() #Dropcolumns
                             
-                            #Store models predictions for data in prediction variable
-                            prediction=model.predict(df)
-                            #Add prediction column to the dataset
-                            df["Fraud_Prediction"] = prediction  
-                            #Obtain the number of fraud
-                            #https://www.geeksforgeeks.org/how-to-extract-the-value-names-and-counts-from-value_counts-in-pandas/
-                           
-                            fraud_count = df["Fraud_Prediction"].value_counts().get(1, 0)
-                            #If number of frauds more than 0 then display error message
-                            if fraud_count>0:
-                                st.error(f"⚠️ {fraud_count}Fraudulent Transactions Detected! ")
-                            #If there are no frauds then a success message displayed
-                            else:
-                                st.success("✅ No fraudulent transactions")
-                                st.success("You can now enter new data to be checked")
+                            #Data preprocessing
+                            #Amount column is normalized
+                            df['amt'] = pt.transform(df[['amt']])
+
+                            #Transaction time is converted to date time object
+                            df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'])
+                            df['transaction_period'] = df['trans_date_trans_time'].view('int64') // 10**9  # Convert to seconds
+                            df.drop(columns=['trans_date_trans_time'], inplace=True)  # Drop original column
+
+                            #Date of birth is converted to date time object
+                            df['dob'] = pd.to_datetime(df['dob'])
+                            df['new_dob'] = df['dob'].view('int64') // 10**9  # Convert to seconds
+                            df.drop(columns=['dob'], inplace=True)  # Drop original column
+
+                            #Encode categorical variables
+                            #Encode merchant
+                            df['merchant_encoded'] = label_encoder.fit_transform(df['merchant'].fillna('Unknown'))   #Encode merchant
+                            df.drop(columns=['merchant'], inplace=True)   #Drop old merchant column
+
+                            #Encode category
+                            df['category_encoded'] = label_encoder.fit_transform(df['category'].fillna('Unknown'))
+                            df.drop(columns=['category'], inplace=True)
+
+                            #Encode city
+                            df['city_encoded'] = label_encoder.fit_transform(df['city'].fillna('Unknown'))
+                            df.drop(columns=['city'], inplace=True)        
+
+                            # Scale the features
+                            X_scaled = scaler.transform(df)
+
+                            # Convert X_scaled (NumPy array) back to a DataFrame with the original columns
+                            X_scaled_df = pd.DataFrame(X_scaled, columns=df.columns)
+
+                            #Position the fields in the correct for the model using .iloc
+                            df_new = X_scaled_df.iloc[:, [0, 3, 4, 5, 1, 2]]              
+            
+                            ##Check for fraud button
+                            if st.button("Fraud check"):
+                        ##Model prediction - https://machinelearningmastery.com/make-predictions-scikit-learn/
                                 
+                                #Store models predictions for data in prediction variable
+                                prediction=model.predict(df)
+                                #Add prediction column to the dataset
+                                df["Fraud_Prediction"] = prediction  
+                                #Obtain the number of fraud
+                                #https://www.geeksforgeeks.org/how-to-extract-the-value-names-and-counts-from-value_counts-in-pandas/
+                            
+                                fraud_count = df["Fraud_Prediction"].value_counts().get(1, 0)
+                                #If number of frauds more than 0 then display error message
+                                if fraud_count>0:
+                                    st.error(f"⚠️ {fraud_count}Fraudulent Transactions Detected! ")
+                                #If there are no frauds then a success message displayed
+                                else:
+                                    st.success("✅ No fraudulent transactions")
+                                    st.success("You can now enter new data to be checked")
+                                    
 
-                            df_main["Fraud_Prediction"] = prediction  # Add predictions to the uploaded file
+                                df_main["Fraud_Prediction"] = prediction  # Add predictions to the uploaded file
 
-        #https://stackoverflow.com/questions/43221208/iterate-over-pandas-dataframe-using-itertuples - How to iterate over a dataframe                                                           
-                            #For each row in the uploaded file, add it to the datanbase
-                            for row in df_main.itertuples(index=False):
-                                amt=row.amt
-                                trans_date_trans_time=row.trans_date_trans_time
-                                dob=row.dob
-                                merchant=row.merchant
-                                category=row.category
-                                city=row.city
-                                prediction=row.Fraud_Prediction
-                                addTransactions(amt,trans_date_trans_time,dob,merchant,category,city,prediction)
+            #https://stackoverflow.com/questions/43221208/iterate-over-pandas-dataframe-using-itertuples - How to iterate over a dataframe                                                           
+                                #For each row in the uploaded file, add it to the datanbase
+                                for row in df_main.itertuples(index=False):
+                                    amt=row.amt
+                                    trans_date_trans_time=row.trans_date_trans_time
+                                    dob=row.dob
+                                    merchant=row.merchant
+                                    category=row.category
+                                    city=row.city
+                                    prediction=row.Fraud_Prediction
+                                    addTransactions(amt,trans_date_trans_time,dob,merchant,category,city,prediction)
+                        else:
+                            st.error("You must allow Fraud Guard to store data to check for fraud")
+
                     else:
                         st.error('File type is not csv') #Error message if file type not .csv
                 except Exception as e:
