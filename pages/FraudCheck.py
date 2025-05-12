@@ -15,7 +15,6 @@ from supabase import create_client
 
 ##Load trained xgb model
 model=joblib.load("pages/xgb_model.pk1")
-st.write(model)
 ##Load power transformer used in backend
 pt = joblib.load("pages/powertransformer.pk1")
 ##Load encoder used in back end
