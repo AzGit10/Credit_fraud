@@ -15,7 +15,7 @@ from supabase import create_client
 
 ##Load trained xgb model
 model=joblib.load("pages/xgb_model.pk1")
-
+st.write(model)
 ##Load power transformer used in backend
 pt = joblib.load("pages/powertransformer.pk1")
 ##Load encoder used in back end
@@ -171,7 +171,7 @@ def fraudcheck():
                         fraud_count = df["Fraud_Prediction"].value_counts().get(1, 0)
                         #If number of frauds more than 0 then display error message
                         if fraud_count>0:
-                                st.error(f"⚠️ {fraud_count}Fraudulent Transactions Detected! ")
+                                st.error(f"⚠️ {fraud_count}Fraudulent Transactions Detected!")
                         #If there are no frauds then a success message displayed
                         else:
                                 st.success("✅ No fraudulent transactions")
